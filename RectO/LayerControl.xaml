@@ -1,0 +1,25 @@
+﻿<Window x:Class="RectO.LayerControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:RectO"
+        Title="LayerControl" Height="218" Width="244" WindowStyle="ToolWindow" WindowState="Normal" ResizeMode="NoResize" ShowInTaskbar="False" OverridesDefaultStyle="False" Closing="Window_Closing">
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ToolBar Style="{StaticResource ResourceKey=ToolBarColorStyle}" Height="34" Margin="0,0,-13,0">
+            <Button Name="Add_Layer_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Добавить слой" Click="Add_Layer_Button_Click">
+                <Image Source="/RectO;component/Image/Ico/NewLayer.png" />
+            </Button>
+            <Button Name="Remove_Layer_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Удалить слой" Click="Remove_Layer_Button_Click">
+                <Image Source="/RectO;component/Image/Ico/DeleteLayer.png" />
+            </Button>
+            <Button Name="Union_Layers_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Объеденить слои">
+                <Image Source="/RectO;component/Image/Ico/UnionLayer.png" />
+            </Button>
+        </ToolBar>
+        <ListBox Name="layersList" Grid.Row="1" VerticalAlignment="Bottom" Height="164" Width="234" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionChanged="layersList_SelectionChanged">
+        </ListBox>
+    </Grid>
+</Window>

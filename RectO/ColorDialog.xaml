@@ -1,0 +1,114 @@
+﻿<Window x:Class="RectO.ColorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:RectO"
+        Title="ColorDialog" Height="158" Width="213" WindowStyle="None" Background="Transparent" Activated="colorDialog_Activated" Loaded="colorDialog_Loaded" Closed="colorDialog_Closed"
+        x:Name="colorDialog" ShowInTaskbar="False" WindowStartupLocation="Manual" ResizeMode="NoResize" Deactivated="colorDialog_Deactivated" AllowsTransparency="True">
+    
+    <Window.Resources>
+        <Style x:Key="ColorSliderStyle" TargetType="Slider">
+            <Setter Property="Width" Value="90" />
+            <Setter Property="Margin" Value="5,0,3,0" />
+        </Style>
+        <Style x:Key="cd" >
+            <Setter Property="Rectangle.Width" Value="17" />
+            <Setter Property="Rectangle.Height" Value="17" />
+        </Style>
+        <ImageBrush x:Key="BackgroundBrush" ImageSource="/RectO;component/Image/Other/BackColor.jpg" Stretch="Fill" />
+        <SolidColorBrush x:Key="PreviewColorBrush" Color="{Binding ElementName=colorDialog, Path=SelectedColor}" />
+    </Window.Resources>
+
+    <Border BorderThickness="1" BorderBrush="Black" Background="{StaticResource ResourceKey=BackgroundBrush}">
+        <Grid Margin="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="81"></ColumnDefinition>
+                <ColumnDefinition Width="125"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="75"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <local:ColorControl x:Name="SelectionColors" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" ElementSize="50" ForegroundRectClick="SelectionColors_ForegroundRectClick" BackgroundRectClick="SelectionColors_BackgroundRectClick" ForeColorChanged="SelectionColors_ForeColorChanged" BackColorChanged="SelectionColors_BackColorChanged" ReverseImageButtonClick="slider_MouseDown" />
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Image Source="/RectO;component/Image/Other/Alpha.png" Stretch="Fill" Width="17" Height="17" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <Rectangle Name="PreviewCurrentColor" Fill="{StaticResource ResourceKey=PreviewColorBrush}" Width="17" Height="17" Stroke="Black" StrokeThickness="1" Margin="0,0,1,0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                <TextBox Name="NumberColorPresentation" Width="63" Height="19" MaxLength="8" HorizontalAlignment="Right" VerticalAlignment="Center" PreviewKeyDown="NumberColorPresentation_PreviewKeyDown" KeyUp="NumberColorPresentation_KeyUp" CharacterCasing="Upper" HorizontalContentAlignment="Right" />
+            </Grid>
+            <DockPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <Label Style="{StaticResource ResourceKey=ComicSansMSFontStyle}" >R:</Label>
+                    <Slider Name="sliderRedColorComponent" Value="{Binding ElementName=colorDialog, Path=Red, Mode=TwoWay}" Style="{StaticResource ResourceKey=ColorSliderStyle}" Minimum="0" Maximum="255" PreviewMouseDown="slider_MouseDown"></Slider>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <Label Style="{StaticResource ResourceKey=ComicSansMSFontStyle}">G:</Label>
+                    <Slider Name="sliderGreenColorComponent" Value="{Binding ElementName=colorDialog, Path=Green, Mode=TwoWay}" Style="{StaticResource ResourceKey=ColorSliderStyle}" Minimum="0" Maximum="255" PreviewMouseDown="slider_MouseDown"></Slider>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <Label Style="{StaticResource ResourceKey=ComicSansMSFontStyle}">B:</Label>
+                    <Slider Name="sliderBlueColorComponent" Value="{Binding ElementName=colorDialog, Path=Blue, Mode=TwoWay}" Style="{StaticResource ResourceKey=ColorSliderStyle}" Minimum="0" Maximum="255" PreviewMouseDown="slider_MouseDown"></Slider>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <Label Style="{StaticResource ResourceKey=ComicSansMSFontStyle}">A:</Label>
+                    <Slider Name="sliderAlphaColorComponent" Value="{Binding ElementName=colorDialog, Path=Alpha, Mode=TwoWay}" Style="{StaticResource ResourceKey=ColorSliderStyle}" Minimum="0" Maximum="255" PreviewMouseDown="slider_MouseDown"></Slider>
+                </StackPanel>
+            </DockPanel>
+            <WrapPanel VerticalAlignment="Bottom" Name="DefaultColorsPalette" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="7,4,7,4">
+                <WrapPanel.Resources>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Width" Value="16" />
+                        <Setter Property="Height" Value="16" />
+                        <Setter Property="Stroke" Value="Black" />
+                        <Setter Property="StrokeThickness" Value="0" />
+                        <Style.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="StrokeThickness" Duration="0" To="1.5" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="StrokeThickness" Duration="0" To="0" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </Style.Triggers>
+                        
+                    </Style>
+                </WrapPanel.Resources>
+                <Rectangle MouseUp="OnRectangleClick" Fill="Black" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF404040" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="Red" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FFFF6A00" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FFFFD800" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF00FF21" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="Cyan" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF0026FF" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF4800FF" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FFB200FF" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF00DC" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FFFF006E" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="White" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="Gray" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF7F0000" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF7F3300" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FFF76A00" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF007F0E" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF007F7F" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF004A7F" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF21007F" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF57007F" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF7F006E" />
+                <Rectangle MouseUp="OnRectangleClick" Fill="#FF7F0037" />
+            </WrapPanel>
+        </Grid>
+    </Border>
+</Window>

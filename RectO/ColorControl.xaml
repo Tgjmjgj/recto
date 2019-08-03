@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="RectO.ColorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             Name="colControl">
+    <UserControl.Resources>
+        <Style x:Key="BindingSizeStyle">
+            <Setter Property="Grid.Width" Value="{Binding ElementName=colControl, Path=ElementSize}" />
+            <Setter Property="Grid.Height" Value="{Binding ElementName=colControl, Path=ElementSize}" />
+        </Style>
+        <Style x:Key="ColorRectangleSizeStyle">
+            <Setter Property="Rectangle.Width" Value="{Binding ElementName=colControl, Path=ColorRectSize}" />
+            <Setter Property="Rectangle.Height" Value="{Binding ElementName=colControl, Path=ColorRectSize}" />
+        </Style>
+        <Style x:Key="ReverseImageSizeStyle">
+            <Setter Property="Image.Width" Value="{Binding ElementName=colControl, Path=ReverseAutoSize}" />
+            <Setter Property="Image.Height" Value="{Binding ElementName=colControl, Path=ReverseAutoSize}" />
+        </Style>
+        <SolidColorBrush x:Key="ForeColorBrush" Color="{Binding ElementName=colControl, Path=ForeColor}" />
+        <SolidColorBrush x:Key="BackColorBrush" Color="{Binding ElementName=colControl, Path=BackColor}" />
+    </UserControl.Resources>
+    
+    <Grid Name="IncludeRectGrid" Style="{StaticResource ResourceKey=BindingSizeStyle}">
+        <Image Source="/RectO;component/Image/Other/Alpha.png" Style="{StaticResource ResourceKey=ColorRectangleSizeStyle}" Stretch="Fill" HorizontalAlignment="Right" VerticalAlignment="Bottom" />
+        <Rectangle Name="BackRectangle" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" MouseUp="OnBackgroundRectClick" ToolTip="Дополнительный">
+            <Rectangle.Style>
+                <Style BasedOn="{StaticResource ResourceKey=ColorRectangleSizeStyle}" TargetType="Rectangle">
+                    <Setter Property="Fill" Value="{StaticResource ResourceKey=BackColorBrush}" />
+                </Style>
+            </Rectangle.Style>
+        </Rectangle>
+        <Image Source="/RectO;component/Image/Other/Alpha.png" Style="{StaticResource ResourceKey=ColorRectangleSizeStyle}" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <Rectangle Name="ForeRectangle" Stroke="Black" StrokeThickness="1" HorizontalAlignment="Left" VerticalAlignment="Top" MouseUp="OnForegroundRectClick" ToolTip="Основной">
+            <Rectangle.Style>
+                <Style BasedOn="{StaticResource ResourceKey=ColorRectangleSizeStyle}" TargetType="Rectangle">
+                    <Setter Property="Fill" Value="{StaticResource ResourceKey=ForeColorBrush}" />
+                </Style>
+            </Rectangle.Style>
+        </Rectangle>
+        <Image Name="ReverseImageButton" Style="{StaticResource ResourceKey=ReverseImageSizeStyle}" Source="/RectO;component/Image/Other/Reverse.png" ToolTip="Поменять цвета местами" VerticalAlignment="Top" HorizontalAlignment="Right" Stretch="Fill" MouseUp="OnReverseImageButtonClick" />
+    </Grid>
+</UserControl>

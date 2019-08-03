@@ -1,0 +1,243 @@
+﻿<Window x:Class="RectO.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:RectO"
+        xmlns:itr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:command ="clr-namespace:RectO"
+        Title="Recto" Height="603" Width="824" ShowInTaskbar="True" FlowDirection="LeftToRight" Focusable="True" AllowDrop="True" IsEnabled="True" UseLayoutRounding="True" IsManipulationEnabled="True" IsHitTestVisible="True" IsTabStop="False" WindowStyle="ThreeDBorderWindow" WindowState="Maximized" WindowStartupLocation="CenterScreen" Topmost="False" Visibility="Visible" Icon="/RectO;component/Image/Icon.png" ForceCursor="True" SizeChanged="Window_SizeChanged" Closing="Window_Closing" Top="0" MinWidth="820" MinHeight="325" Left="Auto" Loaded="Window_Loaded">
+    
+    <Window.Resources>
+        <VisualBrush x:Key="LayerRecto_VisualBrush" Visual="{Binding ElementName=imageCanvas}" />
+    </Window.Resources>
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.New" Executed="MenuItem_New_Executed"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="MenuItem_Open_Executed"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Save" Executed="MenuItem_Save_Executed" CanExecute="CanSave"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.SaveAs" Executed="MenuItem_SaveAs_Executed" CanExecute="IsFileOpen"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Print" Executed="MenuItem_Print_Executed" CanExecute="IsFileOpen"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Close" Executed="MenuItem_Close_Executed" CanExecute="IsFileOpen"></CommandBinding>
+        <CommandBinding Command="ApplicationCommands.Properties" Executed="MenuItem_Filedata_Executed" CanExecute="IsFileOpen"></CommandBinding>
+        <CommandBinding Command="local:ImageDataManagementController.Back" Executed="MenuItem_Back_Executed" CanExecute="CanBack"></CommandBinding>
+        <CommandBinding Command="local:ImageDataManagementController.Forward" Executed="MenuItem_Forward_Executed" CanExecute="CanForward"></CommandBinding>
+    </Window.CommandBindings>
+
+    <Grid ShowGridLines="False" Style="{StaticResource VerdanaFontStyle}" Name="Main_Grid">
+        <Grid.Background>
+            <ImageBrush Stretch="None" TileMode="None" ImageSource="/RectO;component/Image/Background.jpg"></ImageBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="1"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="212*"></ColumnDefinition>
+            <ColumnDefinition Width="1188*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Menu Style="{StaticResource SegoePrintFontStyle}" Name="Main_Menu" Grid.ColumnSpan="3"  Height="27" IsMainMenu="True" HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="2,2,0,0" Background="#0000FFFF">
+                <MenuItem Name="File_MainMenuItem" Header="_Файл" Style="{StaticResource MainMenuItemStyle}">
+                    <MenuItem Name="Create_MenuItem" Header="_Создать..." Command="ApplicationCommands.New" Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                    <MenuItem Name="Open_MenuItem" Header="_Открыть..." Command="ApplicationCommands.Open"  Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                    <MenuItem Name="Close_MenuItem" Header="_Закрыть" Command="ApplicationCommands.Close"  Style="{StaticResource ComicSansMSFontStyle}" ></MenuItem>
+                    <Separator ></Separator>
+                    <MenuItem Name="Save_MenuItem" Header="Сохранить" Command="ApplicationCommands.Save"  Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                    <MenuItem Name="SaveAs_MenuItem" Header="_Сохранить как..." Command="ApplicationCommands.SaveAs" InputGestureText="Ctr+Shift+S" Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Name="Print_MenuItem" Header="_Печать.." Command="ApplicationCommands.Print"  Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                    <MenuItem Name="Filedata_MenuItem" Header="Сведения о файле"  Style="{StaticResource ComicSansMSFontStyle}" Command="Properties"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Name="Exit_MenuItem" Header="Выход"  Style="{StaticResource ComicSansMSFontStyle}" Click="Exit_MenuItem_Click"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Правка" Style="{StaticResource MainMenuItemStyle}">
+                    <MenuItem Name="Back_MenuItem" Header="Назад" Command="local:ImageDataManagementController.Back" Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                    <MenuItem Name="Forward_MenuItem" Header="Вперед" Command="local:ImageDataManagementController.Forward" Style="{StaticResource ComicSansMSFontStyle}"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Слои" Style="{StaticResource MainMenuItemStyle}">
+                    <MenuItem Name="Add_Layer_MenuItem" Header="Добавить новый слой"  Style="{StaticResource ComicSansMSFontStyle}" Click="Add_Layer_Button_Click"></MenuItem>
+                    <MenuItem Name="Remove_Layer_MenuItem" Header="Удалить слой"  Style="{StaticResource ComicSansMSFontStyle}" Click="Remove_Layer_Button_Click"></MenuItem>
+                </MenuItem>
+                <MenuItem Header="Окно" Style="{StaticResource MainMenuItemStyle}">
+                    <MenuItem Name="Toolbar_MenuItem" Header="Панель слоев"  Style="{StaticResource ComicSansMSFontStyle}" Click="ShowLayer_Click"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Name="Test_MenuItem" Header="Тестирование компоновки"  Style="{StaticResource ComicSansMSFontStyle}" Click="Test_MenuItem_Click"></MenuItem>
+                </MenuItem>
+            </Menu>
+        <Grid Grid.Row="1" MinHeight="50" Grid.ColumnSpan="3" ShowGridLines="False"> 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition Height="70"></RowDefinition>
+                <RowDefinition Height="35"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="400" MaxWidth="550"></ColumnDefinition>
+                <ColumnDefinition MinWidth="150" MaxWidth="300"></ColumnDefinition>
+                <ColumnDefinition MinWidth="102"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Stretch="Fill" Height="2" Source="/RectO;component/Image/LongLine.bmp"></Image>
+            <ToolBarTray Name="ToolBarTray_Menu_One" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Panel.ZIndex="5" AllowDrop="False" Background="#FFDDFFFF">
+                <ToolBar Name="ControlToolBar_One" Band="1" Style="{StaticResource ResourceKey=ToolBarColorStyle}">
+                    <Button Name="Create_ToolBar_One_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Создать" ToolTipService.ShowOnDisabled="True" Command="ApplicationCommands.New">
+                        <Image Source="/RectO;component/Image/Ico/New.png" />
+                    </Button>
+                    <Button Name="Open_ToolBar_One_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Открыть" ToolTipService.ShowOnDisabled="True" Command="ApplicationCommands.Open">
+                        <Image Source="/RectO;component/Image/Ico/Open.png" /></Button>
+                    <Button Name="Save_ToolBar_One_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Сохранить" ToolTipService.ShowOnDisabled="True" Command="ApplicationCommands.Save">
+                        <Image Source="/RectO;component/Image/Ico/Save.png" /></Button>
+                    <Separator></Separator>
+                    <Button Name="Back_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Назад" ToolTipService.ShowOnDisabled="True" Command="local:ImageDataManagementController.Back">
+                        <Image  Source="/RectO;component/Image/Ico/Undo.png" /></Button>
+                    <Button Name="Forward_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Вперёд" ToolTipService.ShowOnDisabled="True" Command="local:ImageDataManagementController.Forward">
+                        <Image Source="/RectO;component/Image/Ico/Redo.png" /></Button>
+                </ToolBar>
+                <ToolBar Band="2" Style="{StaticResource ResourceKey=ToolBarColorStyle}">
+                    <Button Name="Add_Layer_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Добавить слой" Click="Add_Layer_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/NewLayer.png" />
+                    </Button>
+                    <Button Name="Remove_Layer_Button" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Удалить слой" Click="Remove_Layer_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/DeleteLayer.png" />
+                    </Button>
+                </ToolBar>
+                <ToolBar Name="Line_ToolBar" Band="2" Style="{StaticResource ResourceKey=ToolBarColorStyle}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="Thickness_TextBlock" Width="75" Height="25" Padding="4">Толщина:</TextBlock>
+                        <ComboBox Name="Thickness_ComboBox" Width="50" Height="25" SelectionChanged="Thickness_ComboBox_SelectionChanged" Focusable="False">
+                            <ComboBoxItem Content="1" IsSelected="True" />
+                            <ComboBoxItem Content="2" />
+                            <ComboBoxItem Content="3" />
+                            <ComboBoxItem Content="4" />
+                            <ComboBoxItem Content="5" />
+                            <ComboBoxItem Content="6" />
+                            <ComboBoxItem Content="7" />
+                            <ComboBoxItem Content="8" />
+                            <ComboBoxItem Content="9" />
+                            <ComboBoxItem Content="10" />
+                            <ComboBoxItem Content="11" />
+                            <ComboBoxItem Content="12" />
+                            <ComboBoxItem Content="13" />
+                            <ComboBoxItem Content="14" />
+                            <ComboBoxItem Content="15" />
+                            <ComboBoxItem Content="16" />
+                            <ComboBoxItem Content="17" />
+                            <ComboBoxItem Content="18" />
+                            <ComboBoxItem Content="19" />
+                            <ComboBoxItem Content="20" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="LineType_TextBlock" Width="50" Height="25" Padding="4">Вид:</TextBlock>
+                        <ComboBox Name="LineType_ComboBox" Width="50" Height="25" SelectionChanged="LineType_ComboBox_SelectionChanged" Focusable="False">
+                            <ComboBoxItem IsSelected="True">
+                                <Line Height="20" Stroke="Black" StrokeThickness="3" X1="3" Y1="9" X2="39" Y2="9" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <Line StrokeDashArray="2.2 1.8" Height="20" Stroke="Black" X1="3" Y1="9" X2="39" Y2="9" StrokeThickness="3" />
+                            </ComboBoxItem>
+                            <ComboBoxItem>
+                                <Line StrokeDashArray="0.2 1.4" StrokeStartLineCap="Round"  StrokeEndLineCap="Round" StrokeDashCap="Round" Height="20" Stroke="Black" X1="3" Y1="9" X2="39" Y2="9" StrokeThickness="3" />
+                            </ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+                </ToolBar>
+            </ToolBarTray>
+            <ToolBarTray Grid.Row="2" Grid.Column="0">
+                <ToolBar Style="{StaticResource ResourceKey=ToolBarColorStyle}">
+                    <TextBlock Width="75" Height="25" Padding="4" >Фигуры:</TextBlock>
+                    <RadioButton Name="Line_Button" GroupName="Instrument" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Линия" Click="Line_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/Line.png" />
+                    </RadioButton>
+                    <RadioButton Name="Ellipse_Button" GroupName="Instrument" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Эллипс" Click="Ellipse_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/Ellipse.png" />
+                    </RadioButton>
+                    <RadioButton Name="Recto_Button" GroupName="Instrument" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Прямоугольник" Click="Recto_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/Rectangle.png" />
+                    </RadioButton>
+                    <RadioButton Name="Triangle_Button" GroupName="Instrument" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Треугольник" Click="Triangle_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/Triangle.png" />
+                    </RadioButton>
+                    <RadioButton Name="Segment_Button" GroupName="Instrument" Style="{StaticResource UpToolbarButtonStyle}" ToolTip="Сегмент" Click="Segment_Button_Click">
+                        <Image Source="/RectO;component/Image/Ico/Segment.png" />
+                    </RadioButton>
+                </ToolBar>
+                <ToolBarTray.Background>
+                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                        <GradientStop Color="#FF66FFFF" Offset="1" />
+                        <GradientStop Color="#FF808086" Offset="0.017" />
+                    </LinearGradientBrush>
+                </ToolBarTray.Background>
+            </ToolBarTray>
+            <DockPanel Grid.Row="2" Grid.Column="1" Panel.ZIndex="4" Background="#FFDDFFFF">
+                <TextBlock DockPanel.Dock="Right" Width="50" Background="#FFDDFFFF"/>
+                <StatusBar DockPanel.Dock="Left" Height="36" BorderThickness="1" BorderBrush="Black">
+                    <TextBlock MaxHeight="35" Name="_TextBlock_Mouse_coord_info1" HorizontalAlignment="Center"></TextBlock>
+                </StatusBar>
+            </DockPanel>
+            <DockPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3">
+                <Grid DockPanel.Dock="Left" Width="25" Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Panel.ZIndex="2">
+                    <Grid.Background>
+                        <ImageBrush ImageSource="/RectO;component/Image/FlexLine.png" Stretch="Fill" TileMode="FlipY"></ImageBrush>
+                    </Grid.Background>
+                </Grid>
+                <DockPanel Name="RectoPanel" DockPanel.Dock="Right" MinWidth="102" Panel.ZIndex="3" Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" HorizontalAlignment="Stretch">
+                    <DockPanel.Background>
+                        <ImageBrush ImageSource="/RectO;component/Image/LineGrad.png" Stretch="Fill" TileMode="FlipY" />
+                    </DockPanel.Background>
+                    <local:Recto x:Name="Recto1" FillRecto="{StaticResource ResourceKey=LayerRecto_VisualBrush}" />
+                </DockPanel>
+                <DockPanel Panel.ZIndex="1" Grid.Row="0" Grid.Column="3" Grid.RowSpan="3" HorizontalAlignment="Stretch">
+                    <DockPanel.Background>
+                        <ImageBrush ImageSource="/RectO;component/Image/LineGrad.png" Stretch="Fill" TileMode="FlipY" />
+                    </DockPanel.Background>
+                </DockPanel>
+            </DockPanel>
+        </Grid>
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="3" MaxHeight="1">
+            <StackPanel.Background>
+                <ImageBrush TileMode="FlipY" ImageSource="/RectO;component/Image/JustLine.bmp" />
+            </StackPanel.Background>
+        </StackPanel>
+        <ToolBarTray Name="Instrument_ToolBarTray" Grid.Row="3" Grid.Column="0" Orientation="Vertical" Background="#FFEEEE55"> 
+            <ToolBar Name="Instrument_ToolBar" Band="1" MinWidth="35" MaxWidth="70" Style="{StaticResource ResourceKey=ToolBarColorStyle}" >
+                <ToolBar.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FF95FFFF" Offset="0" />
+                        <GradientStop Color="#FFFFFF68" Offset="1" />
+                    </LinearGradientBrush>
+                </ToolBar.Background>
+                <RadioButton Name="Pen_Button" GroupName="Instrument" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Карандаш" Click="Pen_Button_Click">
+                    <Image Source="/RectO;component/Image/Ico/Pen.png" />
+                </RadioButton>
+                <RadioButton Name="Brush_Button" GroupName="Instrument" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Кисть" Click="Brush_Button_Click">
+                    <Image Source="/RectO;component/Image/Ico/Brush.png" />
+                </RadioButton>
+                <RadioButton Name="Eraser_Button" GroupName="Instrument" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Ластик" Click="Eraser_Button_Click">
+                    <Image Source="/RectO;component/Image/Ico/Eraser.png" />
+                </RadioButton>
+                <RadioButton Name="Text_Button" GroupName="Instrument" Style="{StaticResource ToolbarButtonStyle}" ToolTip="Текст" Click="Text_Button_Click">
+                    <Image Source="/RectO;component/Image/Ico/Text.png" />
+                </RadioButton>
+                <local:ColorControl x:Name="colorControl" Margin="0,25,0,0" ElementSize="25" ForeColor="Black" BackColor="Transparent" ForegroundRectClick="colorControl_ForegroundRectClick" BackgroundRectClick="colorControl_BackgroundRectClick" ForeColorChanged="colorControl_ForeColorChanged" BackColorChanged="colorControl_BackColorChanged" />
+            </ToolBar> 
+        </ToolBarTray>
+        <Border Name="drawingAreaCell" Grid.Row="3" Grid.Column="1" BorderThickness="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="#FF67FFFF" ForceCursor="False" Grid.ColumnSpan="2">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FED8D3E5" Offset="0" />
+                    <GradientStop Color="#FFA59CC4" Offset="1" />
+                </LinearGradientBrush>
+            </Border.Background>
+            <ScrollViewer Name="Scroll" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
+                <Canvas Name="TopCanvas" MouseMove="TopCanvas_MouseMove" MouseUp="TopCanvas_MouseUp" MouseDown="TopCanvas_MouseDown" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Border Name="imageBorder" BorderThickness="2" Visibility="Collapsed" BorderBrush="Black">
+                        <Canvas Name="borderCanvas" HorizontalAlignment="Left">
+                            <local:ImageCanvas SnapsToDevicePixels="True" ClipToBounds="True" x:Name="imageCanvas" MouseMove="image_MouseMove" SizeChanged="imageCanvas_SizeChanged" Focusable="True" />
+                        </Canvas>
+                    </Border>
+                </Canvas>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>
