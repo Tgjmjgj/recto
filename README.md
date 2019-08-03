@@ -1,4 +1,4 @@
-Course project from 2013. C# WPF. (for storage)
+Course project from 2013. C# WPF. (for history)
 
 # Simple graphics editor
 
